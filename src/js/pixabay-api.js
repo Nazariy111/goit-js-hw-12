@@ -25,9 +25,14 @@ async function onLoadMoreClick() {
     refs.galleryEl.insertAdjacentHTML("afterend", '<div class="loader-box "><span class="loader"></span></div>');
     const loader = document.querySelector('.loader-box');
     currentPage += 1;
+    const oneGalleryElem = document.querySelector('.gallery-link');
+    const elem = oneGalleryElem.getBoundingClientRect();
+    console.log(elem.height);
+
     const data = await getImage();
     renderImages(data.hits);
     loader.remove();
+    window.scrollBy(0, (elem.height * 2));
     simpleLightBox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 }).refresh();
     checkBtnStatus();
 };

@@ -8,6 +8,7 @@ const refs = {
     galleryEl: document.querySelector('.gallery-box'),
     btnEl: document.querySelector('.search-btn'),
     btnLoadMore: document.querySelector('.load-btn'),
+    
 };
 
 
