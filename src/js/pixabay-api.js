@@ -72,6 +72,7 @@ async function onFormSubmit(e) {
             if (data.hits.length > 0) {
             loader.remove();
             renderImages(data.hits);
+            checkBtnStatus();
             simpleLightBox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 }).refresh();
             } else {
                 loader.remove();
@@ -84,6 +85,7 @@ async function onFormSubmit(e) {
                     iconColor: '#FFFFFF',
                     message: "Sorry, there are no images matching your search query. Please try again!",
                 });
+                refs.btnLoadMore.classList.add('hidden');
             };
         } else {
             loader.remove();
@@ -107,9 +109,10 @@ async function onFormSubmit(e) {
             titleColor: '#FFFFFF',
             iconColor: '#FFFFFF',
             message: err.message,
-            });
+        });
+        refs.btnLoadMore.classList.add('hidden');
     };
-    checkBtnStatus();
+    
     refs.formEl.reset();
     refs.btnEl.disabled = true;
     refs.btnEl.classList.add('disabled');

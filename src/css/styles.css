@@ -143,7 +143,7 @@ input:focus {
   border: 1px solid #808080;
 }
 
-button {
+.search-btn {
   background-color: #4e75ff;
   border: none;
   font-family: "Montserrat", sans-serif;
