@@ -1,8 +1,3 @@
-const PAGE_SIZE = 15;
-let query = '';
-let currentPage = 1;
-let totalHits = 0;
-
 const refs = {
     formEl: document.querySelector('.search-form'),
     galleryEl: document.querySelector('.gallery-box'),
@@ -11,10 +6,7 @@ const refs = {
     
 };
 
-
-
-
-function imageTemplate({ id, largeImageURL, webformatURL, tags, likes, views, comments, downloads }) {
+export function imageTemplate({ id, largeImageURL, webformatURL, tags, likes, views, comments, downloads }) {
     return `<a class="gallery-link" href="${largeImageURL}">
           <div class="gallery-item" id="${id}">
             <img class="gallery-image" src="${webformatURL}" alt="${tags}" loading="lazy" data-source="${largeImageURL}"/>
@@ -28,7 +20,7 @@ function imageTemplate({ id, largeImageURL, webformatURL, tags, likes, views, co
         </a>`;
 };
 
-function renderImages(arr) {
+export function renderImages(arr) {
     const markup = arr.map(imageTemplate).join('');
     const gallery = refs.galleryEl.querySelector('.gallery');
     gallery.insertAdjacentHTML('beforeend', markup);

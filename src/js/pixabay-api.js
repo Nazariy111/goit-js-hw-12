@@ -3,6 +3,21 @@ import "izitoast/dist/css/iziToast.min.css";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import axios from "axios";
+import { imageTemplate } from "./render-functions";
+import { renderImages } from "./render-functions";
+
+const PAGE_SIZE = 15;
+let query = '';
+let currentPage = 1;
+let totalHits = 0;
+
+const refs = {
+    formEl: document.querySelector('.search-form'),
+    galleryEl: document.querySelector('.gallery-box'),
+    btnEl: document.querySelector('.search-btn'),
+    btnLoadMore: document.querySelector('.load-btn'),
+    
+};
 
 let simpleLightBox;
 
