@@ -15,15 +15,27 @@ const PAGE_SIZE = 15;
 
 let simpleLightBox;
 
+async function getImage() {
+    const BASE_URL = 'https://pixabay.com';
+    const END_POINT = '/api/';
+    const PARAMS = `?key=42153044-59e7d8487fc2c2f8c6f74878d&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${currentPage}&per_page=${PAGE_SIZE}`;
+    const url = `${BASE_URL}${END_POINT}${PARAMS}`;
+    const res = await axios.get(url);
+    return res.data;
+};
+
+
 export const refs = {
     formEl: document.querySelector('.search-form'),
     galleryEl: document.querySelector('.gallery-box'),
     btnEl: document.querySelector('.search-btn'),
+    btnLoadMore: document.querySelector('.load-btn'),
 };
 
 const loader = document.querySelector('.loader-box');
 
 refs.formEl.addEventListener('submit', onFormSubmit);
+refs.btnLoadMore.addEventListener('click', onLoadMoreClick);
 refs.formEl.addEventListener('input', e => {
     const searchWord = refs.formEl.elements.word.value.trim();
     if (searchWord) {
@@ -32,49 +44,77 @@ refs.formEl.addEventListener('input', e => {
     };
 });
 
+async function onLoadMoreClick() {
+    currentPage += 1;
+    const data = await getImage();
+    renderImages(data.hits);
+    checkBtnStatus();
+};
+
 async function onFormSubmit(e) {
     e.preventDefault();
 
-    query = e.target.elements.word.value.trim();
-    currentPage = 1;
+  
     const galleryParentElem = document.querySelector('.gallery');
     if (galleryParentElem) {
         galleryParentElem.remove();
     };
 
-    const data = await getImage();
-    console.log(data);
-}
+    query = e.target.elements.word.value.trim();
+    currentPage = 1;
+    try {
+        const data = await getImage();
+        totalHits = data.totalHits;
+        const galleryParentElemMarkup = '<div class="gallery"></div>';
+        refs.galleryEl.insertAdjacentHTML("afterbegin", galleryParentElemMarkup);
 
-
-async function getImage() {
-    const BASE_URL = 'https://pixabay.com';
-    const END_POINT = '/api';
-    const PARAMS = `?key=42153044-59e7d8487fc2c2f8c6f74878d&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${currentPage}&per_page=${PAGE_SIZE}`;
-    const url = `${BASE_URL}${END_POINT}${PARAMS}`;
-    const res = await axios.get(url);
-    return res.data;
+        renderImages(data.hits);
+        
+    } catch (err) {
+        iziToast.show({
+            timeout: 5000,
+            position: 'topCenter',
+            color: '#d11804',
+            messageColor: 'white',
+            titleColor: '#FFFFFF',
+            iconColor: '#FFFFFF',
+            message: err.message,
+            });
+    };
+    checkBtnStatus();
 };
 
-// function imageTemplate({ id, largeImageURL, webformatURL, tags, likes, views, comments, downloads }) {
-//     return `<a class="gallery-link" href="${largeImageURL}">
-//           <div class="gallery-item" id="${id}">
-//             <img class="gallery-image" src="${webformatURL}" alt="${tags}" loading="lazy" data-source="${largeImageURL}"/>
-//             <div class="info">
-//               <p class="info-item"><b>Likes</b>${likes}</p>
-//               <p class="info-item"><b>Views</b>${views}</p>
-//               <p class="info-item"><b>Comments</b>${comments}</p>
-//               <p class="info-item"><b>Downloads</b>${downloads}</p>
-//             </div>
-//           </div>
-//         </a>`;
-// };
 
-// function renderImages(arr) {
-//     const markup = arr.map(imageTemplate).join('');
-//     const gallery = refs.galleryEl.querySelector('.gallery');
-//     gallery.insertAdjacentHTML('beforeend', markup);
-// };
+
+function imageTemplate({ id, largeImageURL, webformatURL, tags, likes, views, comments, downloads }) {
+    return `<a class="gallery-link" href="${largeImageURL}">
+          <div class="gallery-item" id="${id}">
+            <img class="gallery-image" src="${webformatURL}" alt="${tags}" loading="lazy" data-source="${largeImageURL}"/>
+            <div class="info">
+              <p class="info-item"><b>Likes</b>${likes}</p>
+              <p class="info-item"><b>Views</b>${views}</p>
+              <p class="info-item"><b>Comments</b>${comments}</p>
+              <p class="info-item"><b>Downloads</b>${downloads}</p>
+            </div>
+          </div>
+        </a>`;
+};
+
+function renderImages(arr) {
+    const markup = arr.map(imageTemplate).join('');
+    const gallery = refs.galleryEl.querySelector('.gallery');
+    gallery.insertAdjacentHTML('beforeend', markup);
+};
+
+function checkBtnStatus() { 
+    const maxPage = Math.ceil(totalHits / PAGE_SIZE);
+    const isLastPage = maxPage <= currentPage;
+    if (isLastPage) {
+        refs.btnLoadMore.classList.add('hidden');
+    } else {
+        refs.btnLoadMore.classList.remove('hidden');
+    };
+};
 
 
 // async function onFormSubmit(e) {

@@ -172,4 +172,25 @@ button:hover {
   display: flex;
   justify-content: center;
   margin-top: 50px;
+  
+}
+
+.load-btn {
+  background-color: #4e75ff;
+  border: none;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 16px;
+  height: 40px;
+  display: block;
+}
+
+.hidden {
+  opacity: 0;
+  display: none;
 }
