@@ -4,9 +4,6 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import axios from "axios";
 
-// import { renderImages } from "./render-functions";
-// import { addMarkup } from "./render-functions";
-
 let query = '';
 let currentPage = 1;
 let totalHits = 0;
@@ -48,18 +45,21 @@ async function onLoadMoreClick() {
     currentPage += 1;
     const data = await getImage();
     renderImages(data.hits);
+    simpleLightBox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 }).refresh();
     checkBtnStatus();
 };
 
+
+
+
 async function onFormSubmit(e) {
     e.preventDefault();
-
-  
+    refs.formEl.insertAdjacentHTML("afterend", '<div class="loader-box "><span class="loader"></span></div>');
     const galleryParentElem = document.querySelector('.gallery');
     if (galleryParentElem) {
         galleryParentElem.remove();
     };
-
+    const loader = document.querySelector('.loader-box');
     query = e.target.elements.word.value.trim();
     currentPage = 1;
     try {
@@ -68,8 +68,36 @@ async function onFormSubmit(e) {
         const galleryParentElemMarkup = '<div class="gallery"></div>';
         refs.galleryEl.insertAdjacentHTML("afterbegin", galleryParentElemMarkup);
 
-        renderImages(data.hits);
-        
+        if (query) {
+            if (data.hits.length > 0) {
+            loader.remove();
+            renderImages(data.hits);
+            simpleLightBox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 }).refresh();
+            } else {
+                loader.remove();
+                iziToast.show({
+                    timeout: 5000,
+                    position: 'topCenter',
+                    color: '#d11804',
+                    messageColor: 'white',
+                    titleColor: '#FFFFFF',
+                    iconColor: '#FFFFFF',
+                    message: "Sorry, there are no images matching your search query. Please try again!",
+                });
+            };
+        } else {
+            loader.remove();
+            iziToast.show({
+                timeout: 5000,
+                position: 'topCenter',
+                color: '#d11804',
+                messageColor: 'white',
+                titleColor: '#FFFFFF',
+                iconColor: '#FFFFFF',
+                message: "The field is empty. Please enter a word!",
+            });
+            refs.btnLoadMore.classList.add('hidden');
+        };
     } catch (err) {
         iziToast.show({
             timeout: 5000,
@@ -82,6 +110,9 @@ async function onFormSubmit(e) {
             });
     };
     checkBtnStatus();
+    refs.formEl.reset();
+    refs.btnEl.disabled = true;
+    refs.btnEl.classList.add('disabled');
 };
 
 
@@ -131,40 +162,40 @@ function checkBtnStatus() {
 
 //     const searchWord = e.target.elements.word.value.trim();
 
-//     if (searchWord) { 
-//         const data = await searchImage();
-//         let imagesArray = data.hits;
-//         if (imagesArray.length > 0) {
-//             loader.remove();
-//             const markup = renderImages(imagesArray);
-//             addMarkup(markup);
-//                     // const gallery = refs.galleryEl.querySelector('.gallery');
-//                     // gallery.insertAdjacentHTML('beforeend', markup);
-//             simpleLightBox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 }).refresh();
-//         } else {
-//             loader.remove();
-//             iziToast.show({
-//                 timeout: 5000,
-//                 position: 'topCenter',
-//                 color: '#d11804',
-//                 messageColor: 'white',
-//                 titleColor: '#FFFFFF',
-//                 iconColor: '#FFFFFF',
-//                 message: "Sorry, there are no images matching your search query. Please try again!",
-//             });
-//         };
-//     } else {
-//         loader.remove();
-//         iziToast.show({
-//             timeout: 5000,
-//             position: 'topCenter',
-//             color: '#d11804',
-//             messageColor: 'white',
-//             titleColor: '#FFFFFF',
-//             iconColor: '#FFFFFF',
-//             message: "The field is empty. Please enter a word!",
-//         });
-//     };
+    // if (searchWord) { 
+    //     const data = await searchImage();
+    //     let imagesArray = data.hits;
+    //     if (imagesArray.length > 0) {
+    //         loader.remove();
+    //         const markup = renderImages(imagesArray);
+    //         addMarkup(markup);
+    //                 // const gallery = refs.galleryEl.querySelector('.gallery');
+    //                 // gallery.insertAdjacentHTML('beforeend', markup);
+    //         simpleLightBox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 }).refresh();
+    //     } else {
+    //         loader.remove();
+    //         iziToast.show({
+    //             timeout: 5000,
+    //             position: 'topCenter',
+    //             color: '#d11804',
+    //             messageColor: 'white',
+    //             titleColor: '#FFFFFF',
+    //             iconColor: '#FFFFFF',
+    //             message: "Sorry, there are no images matching your search query. Please try again!",
+    //         });
+    //     };
+    // } else {
+    //     loader.remove();
+    //     iziToast.show({
+    //         timeout: 5000,
+    //         position: 'topCenter',
+    //         color: '#d11804',
+    //         messageColor: 'white',
+    //         titleColor: '#FFFFFF',
+    //         iconColor: '#FFFFFF',
+    //         message: "The field is empty. Please enter a word!",
+    //     });
+    // };
 
 //     refs.formEl.reset();
 //     refs.btnEl.disabled = true;
