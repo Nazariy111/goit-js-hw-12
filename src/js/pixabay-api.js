@@ -5,7 +5,7 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 import axios from "axios";
 import { imageTemplate } from "./render-functions";
 import { renderImages } from "./render-functions";
-
+import { refs } from "../main";
 
 const PAGE_SIZE = 15;
 let query = '';
@@ -13,31 +13,19 @@ let currentPage = 1;
 let totalHits = 0;
 
 
-const refs = {
-    formEl: document.querySelector('.search-form'),
-    galleryEl: document.querySelector('.gallery-box'),
-    btnEl: document.querySelector('.search-btn'),
-    btnLoadMore: document.querySelector('.load-btn'),
+// const refs = {
+//     formEl: document.querySelector('.search-form'),
+//     galleryEl: document.querySelector('.gallery-box'),
+//     btnEl: document.querySelector('.search-btn'),
+//     btnLoadMore: document.querySelector('.load-btn'),
     
-};
+// };
 
 
 let simpleLightBox;
 
 
-refs.formEl.addEventListener('submit', onFormSubmit);
-refs.btnLoadMore.addEventListener('click', onLoadMoreClick);
-refs.formEl.addEventListener('input', e => {
-    const searchWord = refs.formEl.elements.word.value.trim();
-    if (searchWord) {
-        refs.btnEl.disabled = false;
-        refs.btnEl.classList.remove('disabled');
-    };
-});
-
-
-
-async function onLoadMoreClick() {
+export async function onLoadMoreClick() {
     refs.galleryEl.insertAdjacentHTML("afterend", '<div class="loader-box "><span class="loader"></span></div>');
     const loader = document.querySelector('.loader-box');
 
@@ -57,7 +45,7 @@ async function onLoadMoreClick() {
 
 
 
-async function onFormSubmit(e) {
+export async function onFormSubmit(e) {
     e.preventDefault();
 
     refs.formEl.insertAdjacentHTML("afterend", '<div class="loader-box "><span class="loader"></span></div>');

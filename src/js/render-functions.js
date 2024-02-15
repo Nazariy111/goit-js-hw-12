@@ -1,10 +1,4 @@
-const refs = {
-    formEl: document.querySelector('.search-form'),
-    galleryEl: document.querySelector('.gallery-box'),
-    btnEl: document.querySelector('.search-btn'),
-    btnLoadMore: document.querySelector('.load-btn'),
-    
-};
+import { refs } from "../main";
 
 export function imageTemplate({ id, largeImageURL, webformatURL, tags, likes, views, comments, downloads }) {
     return `<a class="gallery-link" href="${largeImageURL}">
