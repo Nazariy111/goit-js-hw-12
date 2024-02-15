@@ -6,10 +6,12 @@ import axios from "axios";
 import { imageTemplate } from "./render-functions";
 import { renderImages } from "./render-functions";
 
+
 const PAGE_SIZE = 15;
 let query = '';
 let currentPage = 1;
 let totalHits = 0;
+
 
 const refs = {
     formEl: document.querySelector('.search-form'),
@@ -19,10 +21,9 @@ const refs = {
     
 };
 
+
 let simpleLightBox;
 
-
-const loader = document.querySelector('.loader-box');
 
 refs.formEl.addEventListener('submit', onFormSubmit);
 refs.btnLoadMore.addEventListener('click', onLoadMoreClick);
@@ -39,30 +40,37 @@ refs.formEl.addEventListener('input', e => {
 async function onLoadMoreClick() {
     refs.galleryEl.insertAdjacentHTML("afterend", '<div class="loader-box "><span class="loader"></span></div>');
     const loader = document.querySelector('.loader-box');
+
     currentPage += 1;
+
     const oneGalleryElem = document.querySelector('.gallery-link');
     const elem = oneGalleryElem.getBoundingClientRect();
-    console.log(elem.height);
 
     const data = await getImage();
     renderImages(data.hits);
     loader.remove();
     window.scrollBy(0, (elem.height * 2));
     simpleLightBox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 }).refresh();
+
     checkBtnStatus();
 };
 
 
+
 async function onFormSubmit(e) {
     e.preventDefault();
+
     refs.formEl.insertAdjacentHTML("afterend", '<div class="loader-box "><span class="loader"></span></div>');
     const galleryParentElem = document.querySelector('.gallery');
     if (galleryParentElem) {
         galleryParentElem.remove();
     };
+
     const loader = document.querySelector('.loader-box');
+
     query = e.target.elements.word.value.trim();
     currentPage = 1;
+
     try {
         const data = await getImage();
         totalHits = data.totalHits;
@@ -73,10 +81,12 @@ async function onFormSubmit(e) {
             if (data.hits.length > 0) {
             loader.remove();
             renderImages(data.hits);
+                
             checkBtnStatus();
             simpleLightBox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 }).refresh();
             } else {
                 loader.remove();
+
                 iziToast.show({
                     timeout: 5000,
                     position: 'topCenter',
@@ -120,6 +130,7 @@ async function onFormSubmit(e) {
 };
 
 
+
 async function getImage() {
     const BASE_URL = 'https://pixabay.com';
     const END_POINT = '/api/';
@@ -129,9 +140,12 @@ async function getImage() {
     return res.data;
 };
 
+
+
 function checkBtnStatus() { 
     const maxPage = Math.ceil(totalHits / PAGE_SIZE);
     const isLastPage = maxPage <= currentPage;
+
     if (isLastPage) {
         refs.btnLoadMore.classList.add('hidden');
         iziToast.show({
