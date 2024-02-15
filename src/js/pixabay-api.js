@@ -13,15 +13,6 @@ let currentPage = 1;
 let totalHits = 0;
 
 
-// const refs = {
-//     formEl: document.querySelector('.search-form'),
-//     galleryEl: document.querySelector('.gallery-box'),
-//     btnEl: document.querySelector('.search-btn'),
-//     btnLoadMore: document.querySelector('.load-btn'),
-    
-// };
-
-
 let simpleLightBox;
 
 
